@@ -97,6 +97,38 @@ Implementing custom logic that processes AXIS data directly and drives GPIO-like
 While Vivado's standard GPIO IP does not support AXI-Stream (AXIS), you can still achieve similar functionality by designing custom modules that bridge the gap between AXIS and GPIO control. This approach requires additional development effort but allows you to leverage AXIS in scenarios where GPIO-like control is needed.
 
 
+# Question related to TCP Prtocol (transport layer) :-
+
+# Ques .1)   The mss is 1460 byte it indicates that the data that is sending with each posedge clk  512 bit and it will sent until it reaches to 1460 byte once , when it reached it will combine with the header structure and one packet will transmit that becomes 1480 byte.? this is correct or not?
+
+# Solution :-> 
+
+# Yes, your understanding is almost correct, but let's clarify the process step by step:
+
+# ->Clarified Process:
+ #   ->MSS = 1460 bytes: 
+      This means that the maximum amount of data (payload) that can be sent in a single TCP segment is 1460 bytes.
+ 
+#   -> Data Incoming at 512 bits per Clock Cycle:
+     512 bits = 64 bytes.
+     On each clock cycle, your system receives 64 bytes of data.
+ 
+#  -> Accumulating Data:
+      You will buffer the incoming data until you have accumulated 1460 bytes. Given that you receive 64 bytes per clock cycle:
+      You will need to buffer data over multiple clock cycles until you reach 1460 bytes.
+      1460 bytes / 64 bytes per clock cycle ≈ 22.8125 clock cycles.
+
+# -> Once 1460 Bytes are Buffered:
+     When you have 1460 bytes in your buffer, the TCP segment can be prepared.
+
+# -> Combining with the Header:
+     The TCP segment will be formed by combining the 1460-byte payload with the TCP header. The TCP header is typically 20 bytes long (but it can be larger if options are included).
+     The total size of the TCP packet after adding the header will be 1480 bytes (1460 bytes of data + 20 bytes of TCP header).
+     
+# ->Transmitting the Packet:
+    Once the TCP segment (now 1480 bytes with the header) is ready, it will be transmitted over the network.
+
+
 
 
 
